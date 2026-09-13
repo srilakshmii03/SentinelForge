@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend ./backend
 COPY evaluation ./evaluation
 COPY sample-data ./sample-data
-COPY frontend/dist ./frontend/dist
+COPY --from=frontend-build /ui/dist ./frontend/dist
 COPY README.md AI_USAGE.md .env.example ./
 
 RUN useradd -m -u 10001 appuser && mkdir -p /app/data /app/workspaces && chown -R appuser:appuser /app
