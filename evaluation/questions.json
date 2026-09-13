@@ -1,0 +1,10 @@
+[
+  {"question": "What function creates a synthetic user record?", "expected_sources": ["demo.py"]},
+  {"question": "What arguments does register_user accept?", "expected_sources": ["demo.py"]},
+  {"question": "Which test checks register_user?", "expected_sources": ["test_demo.py"]},
+  {"question": "What email is used in the sample test?", "expected_sources": ["test_demo.py"]},
+  {"question": "What password is used in the sample test?", "expected_sources": ["test_demo.py"]},
+  {"question": "What does register_user return?", "expected_sources": ["demo.py"]},
+  {"question": "What project is this directory for?", "expected_sources": ["README.md"]},
+  {"question": "Is the sample data synthetic?", "expected_sources": ["README.md"]}
+]
