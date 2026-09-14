@@ -10,6 +10,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.routing import Mount
+from mcp.server.transport_security import TransportSecuritySettings
 
 from backend.api.routes import router
 from backend.core.config import settings
@@ -53,7 +54,25 @@ async def request_context(request: Request, call_next):
     return response
 
 app.include_router(router)
-app.mount("/mcp", mcp.streamable_http_app(streamable_http_path="/"))
+mcp_security = TransportSecuritySettings(
+    allowed_hosts=[
+        "localhost",
+        "127.0.0.1",
+        "sentinelforge-app.onrender.com",
+    ],
+    allowed_origins=[
+        "http://localhost:5173",
+        "https://sentinelforge-app.onrender.com",
+    ],
+)
+
+app.mount(
+    "/mcp",
+    mcp.streamable_http_app(
+        streamable_http_path="/",
+        transport_security=mcp_security,
+    ),
+)
 
 @app.get("/")
 def root():
