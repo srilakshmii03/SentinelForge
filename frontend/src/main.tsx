@@ -26,10 +26,47 @@ function App() {
   useEffect(() => { jsonFetch("/api/status").then(setStatus).catch(e => setMessage(e.message)); }, []);
 
   async function ask() {
-    setBusy(true); setMessage("");
-    try { const r = await jsonFetch("/api/query", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) }); setAnswer(r.results || []); }
-    catch (e: any) { setMessage(e.message); } finally { setBusy(false); }
+  setBusy(true);
+  setMessage("");
+
+  try {
+    const r = await jsonFetch("/api/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query }),
+    });
+
+    let results = r.results || [];
+
+    // The deployed MCP bridge may return the tool result
+    // inside the content field as a JSON string.
+    if (!results.length && Array.isArray(r.content)) {
+      for (const item of r.content) {
+        if (typeof item === "string") {
+          try {
+            const parsed = JSON.parse(item);
+            if (Array.isArray(parsed.results)) {
+              results = parsed.results;
+              break;
+            }
+          } catch {
+            // Ignore non-JSON content items.
+          }
+        }
+      }
+    }
+
+    setAnswer(results);
+
+    if (!results.length) {
+      setMessage("No relevant results found.");
+    }
+  } catch (e: any) {
+    setMessage(e.message);
+  } finally {
+    setBusy(false);
   }
+}
 
   async function uploadDocument(file: File) {
     setBusy(true); setMessage("");

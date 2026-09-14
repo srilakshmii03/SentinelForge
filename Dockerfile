@@ -8,7 +8,6 @@ RUN npm install --no-audit --no-fund
 COPY frontend ./
 RUN npm run build
 
-
 # Backend/runtime
 FROM python:3.11-slim
 
